@@ -5,6 +5,14 @@ import viteLogo from '../assets/vite.svg'
 export default function ParentComp () {
    return(
     <>
+    <ChildComp 
+        imageInfo={
+          {
+            src: reactLogo,
+            alt: "React"
+          } 
+        }  
+      />
       <ChildComp 
         imageInfo={
           {
