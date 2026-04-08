@@ -1,11 +1,9 @@
-import ParentComp from "./components/ParentComp"
-import SpreadComp from "./components/SpreadComp"
+import PackingList from "./components/PackingList"
 
 export default function App() {
   return (
     <>
-      <ParentComp />
-      <SpreadComp />
+      <PackingList />
     </>
   )
 }
