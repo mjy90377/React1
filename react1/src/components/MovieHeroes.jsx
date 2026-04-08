@@ -14,6 +14,6 @@ export default function MovieHeroes(){
             <ul>
                 {listHeroes}
             </ul>
-        </section>   
+        </section>     
     )
 }

@@ -1,4 +1,130 @@
 # 202430208 민지영
+## [6주차 - 26.04.08]
+## 1. 조건부 렌더링
+### [조건부 JSX 반환]
+* if문을 통해 조건에 따라 다른 JSX를 반환하는 컴포넌트
+    ```JSX
+    export default function Items({name, isPacked}){
+        if(isPacked){
+               return <li>{name} ☑️</li>;
+        }
+            return <li>{name}</li>;
+        }
+    ```
+    * `isPacked`로 전달받은 true, false 값에 따라 <u>서로 다른 결과</u> 렌더링
+* 값 전달
+    ```jsx
+    import Items from "./Items";
+
+    export default function PackingList() {
+        return(
+            <>
+                <section>
+                    <h1>여행 준비 목록</h1>
+                    <ul>
+                        <Items name="여분 옷" />
+                        <Items name="노트북" />
+                        <Items name="컵라면" isPacked={true}/>
+                    </ul>
+                </section>
+            </>
+        );
+    }
+    ```
+    * `isPacked={true}`로 전달한 값만 체크 표시가 나타남
+### [삼항 연산자]
+* 위처럼 중복 코드가 발생할 경우 **삼항 연산자**를 통하여 간소화 가능
+    ```jsx
+    export default function Items({name, isPacked}){
+        return(
+            <>
+                <li>{name} {isPacked ? "☑️" : "" }</li>
+            </>
+        )
+    }
+    ```
+    * name은 공통 반환
+    * isPacked 값에 따라 체크 모양 반환 여부 결정
+* jsx 중첩이 있을 경우
+    * 삼항 연산자에 소괄호 사용 및 줄바꿈(풀어쓰기)
+    ```jsx
+    export default function Items({name, isPacked}){
+    return(
+            <li>
+                {isPacked ? (
+                    <del>
+                        {name} ☑️
+                    </del>
+                ) : ( name
+                )}
+            </li>
+    )
+    }
+    ```
+    > #### *name 프롭스의 중괄호 유무
+    >> * 아래의 name은 삼항 연산자 전체를 감싸는 중괄호에 감싸지는 형태
+    >> * 위의 name은 del 태그 내부에 포함되기 때문에 (jsx 중첩) 중괄호로 감쌈
+    
+
+* 삼항 연산자는 적당히 사용
+    * 주로 간단한 경우에만 사용함
+    * 논리가 복잡해질 경우 컴포넌트 분리
+
+### [논리 연산자 AND]
+JavaScript의 **`&&` 연산자** 
+: 왼쪽의 조건이 `true`면 <u>오른쪽의 로직을 실행</u>, `false`면 <u>아무 것도 반환하지 않음</u>
+* 삼항 연산자보다 간단한 형태
+* 조건절에 <u>숫자로 전달되는 값</u> **사용 불가**
+    * 0,1 등 전달 시  문자열이 그대로 반환됨
+    * true, false로 전달되는 값만 사용 가능
+
+### [변수 사용]
+* `let`으로 재할당 가능한 변수를 정의하여 조건에 따른 값을 미리 할당
+    ```jsx
+    export default function Items({name, isPacked}){
+        let itemContent = name;
+        if(isPacked) {
+        itemContent = <del>{name + "☑️"}</del>
+    }
+    return(
+        <li>
+            {itemContent}
+        </li>
+    )
+    }
+    ```
+    * return 시 `itemContent` 변수만 전달 
+## 2. 리스트 렌더링
+### [map() 함수]
+: 리스트 형태의 반복되는 컴포넌트 렌더링에 사용되는 함수
+*  `객체이름.map()` 형태
+    ```jsx
+    const heroes = [
+        '스파이더맨: 피터 파커',
+        '아이언맨: 토니 스타크',
+        '배트맨: 브루스 웨인',
+        '슈퍼맨: 클라크 켄트',
+        '헐크: 로버트 브루스 배너'
+    ];
+
+    export default function MovieHeroes(){
+        const listHeroes = heroes.map(hero => <li>{hero}</li>);
+        return (
+            <section>
+                <h1>영화 속 영웅들</h1>
+                <ul>
+                    {listHeroes}
+                </ul>
+            </section>     
+        )
+    }
+    ```
+    *   li 태그가 붙어있는 배열이 리턴됨
+    * `heroes` 와 같이 리스트 이름은 복수형, `hero`와 같이 객체 이름은 단수형 사용 
+
+
+
+---
 ## [5주차 - 26.04.01]
 
 ## 1. JSX
@@ -16,12 +142,12 @@
 >  <u>따옴표 혹은 중괄호</u>를 사용한다.
 1. **따옴표**로 문자열 전달
     * 문자열을 묶을 때만 중괄호가 아닌 따옴표가 사용됨
-    ```JavaScript
+    ```JSX
         <img alt="문자열">
     ```
 2. **중괄호**로 JavaScript <u>변수 참조</u>
     * 선언한 변수를 JSX에서 중괄호로 포함
-    ```JavaScript
+    ```JSX
     const name = "React"
     return(
         <>
@@ -30,7 +156,7 @@
     )
     ```
 3. **중괄호**로 JavaScript <u>함수 호출</u>
-    ```JavaScript
+    ```JSX
         //함수
         function formatDate(date) {
                 return new Intl.DateTimeFormat(
@@ -64,7 +190,7 @@
 
 ### [props 읽기]
 <**자식 컴포넌트**>
-``` JavaScript
+``` JSX
 export default function ChildComp ({alt, width, height}) {
   return (
     <>
@@ -78,7 +204,7 @@ export default function ChildComp ({alt, width, height}) {
 
 
 **<부모 컴포넌트>**
-```JavaScript
+```JSX
 import ChildComp from "./ChildComp"
 
 export default function ParentComp () {
@@ -94,7 +220,7 @@ export default function ParentComp () {
 
 ### [객체 전달]
 **<자식 컴포넌트>**
-```JavaScript
+```JSX
   export default function ChildComp ({imageInfo, width, height}) {
   return (
     <>
@@ -108,7 +234,7 @@ export default function ParentComp () {
 * 객체명으로 값에 접근해야 함
 
 **<부모 컴포넌트>**
-```JavaScript
+```JSX
 import ChildComp from "./ChildComp"
 import reactLogo from '../assets/react.svg'
 
@@ -135,7 +261,7 @@ export default function ParentComp () {
 
 ### [props의 기본값 지정]
 > 자식 컴포넌트에서 변수 뒤에 `=`를 사용해 기본값 지정이 가능하다.
-```JavaScript
+```JSX
 export default function ChildComp 
 ({imageInfo, width=300, height=300})
 ```
@@ -146,7 +272,7 @@ export default function ChildComp
 * props가 매우 많아서 가독성이 떨어질 때 사용하면 유리함
 * 형태 : `<컴포넌트 {...props} />`
 * 자식 컴포넌트
-    ```JavaScript
+    ```JSX
     export default function NameCard({...userData}) {
     return (
         <div>
@@ -161,7 +287,7 @@ export default function ChildComp
     }
     ```
 * 부모 컴포넌트
-    ```JavaScript
+    ```JSX
     import NameCard from "./NameCard";
 
     export default function SpreadComp(){
@@ -271,6 +397,26 @@ npm create vite@latest my-app -- --template react
 * <u>자바스크립트 함수 형태</u>로 개발하며 그 안에 태그들을 넣어 사용하는 방식
 
 ### <규칙>
-1. 전체를 래핑하여 하나의 루트 엘리먼트로 반환해야 한다.
+1. 전체를 래핑하여 <u>하나의 루트 엘리먼트로 반환</u>해야 한다.
 2. 모든 태그를 닫아야 한다.
-3. 속성은 카멜 케이스로 작성해야 한다.
+3. 속성은 **카멜 케이스**로 작성해야 한다.
+---
+## [3주차 - 26.03.18]
+## 1. React 프로젝트
+### [기본 설정]
+* **개발 환경** : node.js
+    * 설치 시 npm, npx도 함께 설치됨
+* **브라우저** : Chrome 
+    * React Developer Tools 확장 사용
+### [Vite를 통한 프로젝트 생성]    
+ >#### *Vite : React 프로젝트 빌더
+>> * 가벼움
+>> * 별도의 설치 필요 없음
+>> * 프로젝트 생성 시 자동으로 디렉터리를 구성함
+>> * 포트: 5173
+* 프로젝트 생성 명령어:  `npm create vite@latest 이름`
+    *  프로젝트 이름은 <u>케밥 케이스</u> 사용
+### [프로젝트 구조]
+* node_modules : 의존성 패키지들
+    * 프로젝트 압축 시 포함하지 않는 것이 좋음
+* public : 
