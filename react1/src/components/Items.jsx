@@ -1,7 +1,12 @@
 export default function Items({name, isPacked}){
     return(
-        <>
-            <li>{name} {isPacked ? "☑️" : "" }</li>
-        </>
+        <li>
+            {isPacked ? (
+                <del>
+                    {name + "☑️"} 
+                </del>
+            ) : ( name
+            )}
+        </li>
     )
 }
