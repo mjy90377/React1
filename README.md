@@ -1,4 +1,142 @@
 # 202430208 민지영
+## [7주차 - 26.04.15]
+## 1. 리스트 렌더링
+### [데이터 구조화]
+: 데이터를 json 형태로 구조화할 수 있음
+```jsx
+    export const heroes = [ 
+    {
+        id:0,
+        casting:'스파이더맨',
+        name: '피터 파커',
+    },
+    {
+        id:1,
+        casting:'아이언맨',
+        name: '토니 스타크',
+    },    
+
+];
+```
+* `key : value` 형태
+* 각 key와 value 쌍은 `,`로 구분됨
+* 하나의 값은 **중괄호**로 묶어서 구분
+* 분리된 파일로 만들고 export하여 사용 가능 
+> *컴포넌트뿐만이 아닌 export한 데이터, 수식들도 **모듈**이다.
+### [filter() 함수]
+: 데이터에서 <u>필요한 정보만</u> **필터링**하여 반환
+* 가져온 데이터에 `filter()` 함수로 새로운 배열을 생성
+ --> `map()` 함수로 저장하여 렌더링
+ ```jsx
+ //데이터 가져오기
+ import { heroes } from "./HeroesData";
+
+export default function MovieHeroes(){
+    //필터링하여 조건에 맞는 데이터만 filterTests에 저장
+    const filterTests = heroes.filter(hero => hero.name === "클라크 켄트");
+
+    //filterTests에 map 함수를 사용하여 저장
+    const listHeroes = filterTests.map(hero => 
+        <li>
+            <p>{hero.name}의 배역은 {hero.casting} 입니다</p>
+        </li>
+    );
+    //렌더링
+    return (
+        <section>
+            <h1>영화 속 영웅들</h1>
+            <ul>
+                {listHeroes}
+            </ul>
+        </section>     
+    )
+}
+ ```
+ > - 함수 내에서 가져온 데이터를 hero에 넣기 때문에 데이터 이름인 heroes가 아닌 변수 이름인 hero를 통해 데이터에 접근한다.
+ > - javascript에는 비교 연산자로 `==`과 `===`을 모두 사용한다,
+ >> * `==` :값 비교 
+ >> * `===` : 데이터 타입까지 비교
+### [화살표 함수]
+* 화살표 함수에서는 `=>` 뒤의 식을 묵시적으로 반환하기 때문에 보통 `return`을 사용하지 않음
+* 여러 줄의 코드를 리턴해야 할 경우 (중괄호로 묶은 내용을 반환할 경우) `return`을 명시하여 사용함
+### [key prop]
+: 배열의 각 항목이 갖는 다른 목록들과 명확히 구분되는 고유한 문자열 혹은 숫자
+
+```
+Each child in a list should have a unique "key" prop
+```
+> 위 오류 메시지는 key prop을 지정하지 않아서 발생함
+* map 함수 사용 시점에 지정
+    ```jsx
+    const listHeroes = filterTests.map(hero => 
+        <li key={hero.id}>
+            <p>{hero.name}의 배역은 {hero.casting} 입니다</p>
+        </li>   
+    );
+    ```
+* 즉석으로 생성된 값이 아닌 <u>배열 안에 포함된 값</u>을 사용해야 함
+* `<></>`(프래그먼트 구문) 으로 전달 불가
+    * 다른 태그로 래핑하여 전달
+    * 혹은 `<Fragment></Fragment>` 태그를 import하여 전달
+
+## 2. 순수 함수 컴포넌트
+### [순수 함수]
+* 같은 입력값을 받았을 때 항상 같은 결과를 반환함
+* 외부의 상태에 영향을 미치지 않음
+* ex)
+    ```jsx
+    function add(a,b){
+        return a + b;
+    }
+    ```
+### [순수 컴포넌트]
+* 컴포넌트를 순수 함수 형태로 만든 것
+* <u>사이드 이펙트 방지</u>를 위해 중요
+* ex)
+    ```jsx
+    export default function OrderUp ({order}) {
+        return (
+            <>
+                <section>
+                    <p>치즈버거 {order}개/콜라 {order}개 + (이벤트) 프렌치 프라이 {2 * order}개</p>
+                </section>
+            </>
+        )
+        
+    }
+    ```
+    ```jsx
+    import OrderUp from "./OrederUp"
+
+    export default function Kiosk () {
+        return(
+            <>
+                <h2>치즈버거 세트 메뉴를 주문하세요.</h2>
+                <p>일반 세트 : </p>
+                <OrderUp order={1} />
+                <p>패밀리 세트 : </p>
+                <OrderUp order={2} />
+                <p>이용해 주셔서 감사합니다.</p>
+            </>
+        )
+        
+    }
+    ```
+### [지역 변경]
+: Local Mutation, 함수가 호출 전에 생성된 객체나 함수 스코프 밖의 변수를 변경하는 것
+* 사이드 이펙트를 변경이라고도 함
+* 리액트에서 함수 스코프 == **컴포넌트 스코프**
+* 스코프 내에서의 변경은 문제가 되지 않음
+    - 렌더링 중에 생성된 변수,배열 값이 변경되는 등
+
+## 3. 트리 UI
+### [트리]
+* **트리**: 요소 사이의 <u>상호 관계</u>
+* 리액트 등은 UI를 트리로 모델링함
+* 렌더 트리로 컴포넌트 간의 관계를 이해할 수 있음
+* 상태 관리, 성능 파악 등에 도움 
+
+---
 ## [6주차 - 26.04.08]
 ## 1. 조건부 렌더링
 ### [조건부 JSX 반환]

@@ -1,9 +1,9 @@
-import MovieHeroes from "./components/MovieHeroes"
+import Kiosk from "./components/Kiosk"
 
 export default function App() {
   return (
     <>
-      <MovieHeroes />
+      <Kiosk />
     </>
   )
 }
