@@ -1,9 +1,9 @@
-import Kiosk from "./components/Kiosk"
+import ButtonCom from "./components/ButtonCom/ButtonCom"
 
 export default function App() {
   return (
     <>
-      <Kiosk />
+      <ButtonCom />
     </>
   )
 }

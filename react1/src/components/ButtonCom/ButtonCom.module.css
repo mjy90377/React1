@@ -1,0 +1,13 @@
+.title {
+    color: blue
+}
+
+.navBar {
+    padding: 15px;
+    background-color: gray;
+    border: 1px solid black
+}
+
+button {
+    margin-right: 10px;
+}
