@@ -1,15 +1,23 @@
 import ButtonCom from "./ButtonCom"
-import { handleClick } from "./handle"
+import { handlePlay } from "./handle"
+import { handleStop } from "./handle"
+import sampleVideo from "../../assets/sample.mp4"
 
 export default function Toolbar(){
     return (
         <>
-            <ButtonCom message="버튼 클릭" handle={handleClick}>
-                버튼
-            </ButtonCom>
-            <ButtonCom message="버튼2 클릭" handle={handleClick}>
-                버튼2
-            </ButtonCom>
+            <nav>
+                <ButtonCom message="videoPlayer" handle={handlePlay}>
+                    Play
+                </ButtonCom>
+                <ButtonCom message="videoPlayer" handle={handleStop}>
+                    Stop
+                </ButtonCom>
+            </nav>
+            <br />
+            <section>
+                <video id="videoPlayer" src={sampleVideo} controls width="350"/>
+            </section>
         </>
     )
 }
