@@ -1,13 +1,9 @@
-import style from "./ButtonCom.module.css"
 
-export default function ButtonCom({message, children}){
-    function handleClick(){
-        alert(message);
-    }
+export default function ButtonCom({message, children, handle}){
 
     return (
         <>
-            <button onClick={handleClick}>
+            <button onClick={() => handle({message})}>
                 {children}
             </button>
         </>

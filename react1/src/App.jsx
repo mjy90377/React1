@@ -1,4 +1,4 @@
-import Toolbar from "./components/Toolbar"
+import Toolbar from "./components/ButtonCom/Toolbar"
 
 export default function App() {
   return (
