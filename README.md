@@ -1,4 +1,92 @@
 # 202430208 민지영
+## [10주차 - 26.05.06]
+## 1. 이벤트 핸들러
+### [핸들러에서 props 받기]
+> #### *`<button></button>` 과 같은 html 태그에서 props를 사용할 수 있는 이유는?
+>> --> React에서 <u>컴포넌트처럼 처리</u>하기 때문
+* 받은 props를 핸들러에서 사용
+    ```jsx
+    export default function ButtonCom({message, children}){
+        function handleClick(){
+            alert(message);
+        }
+
+        return (
+            <>
+                <button onClick={handleClick}>
+                    {children}
+                </button>
+            </>
+        )
+    }
+    ```
+    * `message` prop을 받아 `handleClick`에서 출력
+* prop 전달
+    ```jsx
+        import ButtonCom from "./ButtonCom/ButtonCom"
+
+        export default function Toolbar(){
+            return (
+                <>
+                    <ButtonCom message="버튼 클릭">
+                        버튼
+                    </ButtonCom>
+                    <ButtonCom message="버튼2 클릭">
+                        버튼2
+                    </ButtonCom>
+                </>
+            )
+        }
+    ```
+    * 2개의 ButtonCom에 다른 `message` 값을 전달함
+### [핸들러를 prop으로 전달]
+: 핸들러를 별도의 파일에 **모듈** 형태로 관리하면 
+편리함
+> #### *모듈
+>  * 모듈은 컴포넌트가 아님
+> * 컴포넌트 이름과 달리 <u>카멜 케이스</u>로 파일 이름 명명
+* 모듈 파일 분리
+    ```jsx
+    //handle.jsx 파일
+    export function handleClick ({message}) {
+        alert(message);
+    }
+    ```
+* 핸들러를 전달받는 컴포넌트 수정
+    ```jsx
+    export default function ButtonCom({message, children, handle}){
+        return (
+            <>
+                <button onClick={() => handle({message})}>
+                    {children}
+                </button>
+            </>
+        )
+    }   
+    ```
+    *   매개변수 전달을 위해 **익명 함수** 형태 사용
+* 부모 컴포넌트에서 모두 import하여 사용
+    ```jsx
+    import ButtonCom from "./ButtonCom"
+
+    //named export 방식이기 때문에 중괄호 필요
+    import { handleClick } from "./handle"
+
+    export default function Toolbar(){
+        return (
+            <>
+                <ButtonCom message="버튼 클릭" handle={handleClick}>
+                    버튼
+                </ButtonCom>
+                <ButtonCom message="버튼2 클릭" handle={handleClick}>
+                    버튼2
+                </ButtonCom>
+            </>
+        )
+    }
+    ```
+    * import한 핸들러를 <u>자식 컴포넌트에 전달</u>
+
 ## [9주차 - 26.04.29]
 ## 1. 트리 구조
 ### [렌더 트리]
