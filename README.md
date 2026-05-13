@@ -1,4 +1,126 @@
 # 202430208 민지영
+## [11주차 - 26.05.13]
+> ### *이벤트 핸들러와 리스너
+> * **이벤트 핸들러** : 이벤트가 발생했을 때 취할 **동작**
+> * **이벤트 리스너** : 이벤트가 <u>발생하는 지 지켜보는</u> 역할
+>>  #### <React에서 이벤트 리스너 개념이 명확하지 않은 이유>
+>> --> 리액트에는 내부에서 캡슐화된 리스너 기능이 있기 때문
+>> * 별도의 이벤트 리스너를 작성할 필요가 없음
+>> * <u>이벤트 핸들러만 작성</u>해서 전달
+>>> `<button onClick={이벤트 핸들러}>`의 `onClcik`은 이벤트 리스너의 기능을 포함한다고 볼 수 있다.
+## 1.이벤트
+### [이벤트의 전파]
+: 발생한 이벤트가 <u>위로 전달</u>되는 현상
+```jsx
+export default function Bubble(){
+    return(
+        <>
+            <h1 className={style.title}>Bubble</h1>
+            <nav className={style.navBar} onClick={() => alert("내비게이션바 클릭")}>
+                <button onClick={() => alert("버튼1 클릭")} className={style.button}>버튼1</button>&nbsp;
+                <button onClick={() => alert("버튼2 클릭")} className={style.button}>버튼2</button>
+            </nav>
+        </>
+    )
+}
+```
+* 버튼을 클릭할 경우: **button의 핸들러**가 실행된 뒤 **nav의 핸들러**도 실행됨
+    * button --> nav 로(위쪽으로) 전파
+*  nav를 클릭할 경우: **nav의 핸들러만** 실행됨
+### [이벤트 전파 막기]
+: **이벤트 오브젝트**의 함수 `e.stopPropagation()` 사용
+* 이벤트 오브젝트: 이벤트 핸들러가 사용하는 유일한 **매개 변수**
+    * `e`라는 이름으로 사용
+    * 이벤트의 <u>정보를 읽을</u> 수 있음
+    * 이벤트의 <u>전파를 멈출</u> 수 있음
+* `e.stopPropagation` 사용
+    ```jsx
+    function Button({onClick, children}){
+    return(
+        <>  
+            <button className={style.button} onClick={e => {
+                e.stopPropagation();
+                onClick();
+            }}>
+                {children}
+            </button>
+            </>
+        )
+    }
+    ```
+    * 버튼을 클릭했을 때 `**버튼의 이벤트**만 발생
+    * 자식에서 부모로 전파되는 것을 막음
+### [기본 동작 방지]
+* 브라우저의 기본 동작
+    ```jsx
+    export default function Signup1(){
+    return(
+        <>
+            <form onSubmit={() => alert("Submitting!")}>
+                <input />
+                <button>Send1</button>
+            </form>
+        </>
+    )
+    }
+    ```
+    * form을 제출할 때</u> 기본 동작으로 페이지가 **리로드**됨
+    > _개발자 도구의 `Network` 탭에서 확인 가능_
+* 브라우저의 기본 동작 막기
+    ```jsx
+        export default function Signup2(){
+        return(
+            <>
+                <form onSubmit={e => {
+                    e.preventDefault();
+                    alert("Submitting!");
+                    }}>
+                    <input />
+                    <button>Send2</button>
+                </form>
+            </>
+        )
+    }
+    ```
+    * `e.preventDefault`를 통해 브라우저의 기본 동작 방지
+    * submit 시에도 브라우저가 리로드되지 않음
+## 2. State
+> #### *이벤트 핸들러와 사이드 이펙트
+> * 이벤트 핸들러는 <u>순수할 필요가 없</u>기 때문에 **사이드 이펙트**에 유리함
+> * 변경을 위한 수단으로 최적
+>> --> 이때 <u>정보를 저장하기 위한 수단</u>으로 `State Hook`을 사용
+### [State의 개념]
+: State는 **컴포넌트의 기억 장소**
+* **상호작용의 결과**를 <u>화면으로 렌더링</u>
+    * 폼에 값 입력, 캐러셀 넘김 등의 상황
+* 컴포넌트가 <u>현재 상태를 기억</u>해야 할 때 이를 저장하는 것이 `State`
+### [index 파일]
+: 이미지 파일을 여러 개 사용해야 할 때, 일일이 import하는 대신 단순화하여 사용 가능하도록 하는 파일
+* 컴포넌트 디렉토리의 이미지 폴더 내부에 `index.jsx`라는 이름으로 작성
+    * 파일 이름이 index가 아닐 경우 경로 참조 시 파일 이름까지 필요
+    * index라는 이름으로 사용하는 것이 좋음
+* 복잡한 코드를 index 파일 내부에서 처리하고, 컴포넌트에서는 해당 파일을 import하여 사용
+* index 파일 작성 방법은 2가지가 있음 (이미지 파일 import는 동일)
+    1. 각각의 이미지 변수명 export
+        ```jsx
+            export {
+                image1,
+                image2,
+                image3
+            };
+        ```
+        * 파일 import 시 `import {image1,image2}`  처럼 각각의 이름 사용 필요
+    2. 변수명을 하나의 객체로 묶어서 export
+        ```jsx
+            export const images = {
+                image1,
+                image2,
+                image3
+            };
+        ```
+        * 파일 import 시 `import {images}` 처럼 하나의 변수 이름으로 사용
+        * 호출 시에는 `{images.image1}`와 같이 호출 필요
+
 ## [10주차 - 26.05.06]
 ## 1. 이벤트 핸들러
 ### [핸들러에서 props 받기]
