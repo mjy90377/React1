@@ -1,9 +1,9 @@
-import Toolbar from "./components/ButtonCom/Toolbar"
+import Bubble from "./components/Bubble/Bubble"
 
 export default function App() {
   return (
     <>
-      <Toolbar />
+      <Bubble />
     </>
   )
 }
