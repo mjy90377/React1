@@ -1,11 +1,9 @@
-import Signup1 from "./components/Signup1"
-import Signup2 from "./components/Signup2"
+import Carousel from "./components/Carousel/Carousel"
 
 export default function App() {
   return (
     <>
-      <Signup1 />
-      <Signup2 />
+      <Carousel />
     </>
   )
 }
