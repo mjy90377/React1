@@ -1,10 +1,12 @@
-import {galleryImages} from "./imgData.jsx"
+import { useState } from "react";
+import {galleryImages} from "./imgData.jsx";
+
 
 export default function Carousel(){
-    let index = 0;
+    const [index, setIndex] = useState(0);
 
     function handleClick(){
-        index = index + 1;
+        setIndex(index + 1);
         console.log(index);
     }
 
