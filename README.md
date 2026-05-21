@@ -1,4 +1,122 @@
 # 202430208 민지영
+## [12주차 - 26.05.20]
+## 1. 컴포넌트의 상태
+### [이미지 모듈 파일]
+1. 이미지의 데이터를 저장하는 **모듈 파일** 작성
+    ```jsx
+    import {slide} from "./images"
+
+    export const galleryImages = [
+        {
+            name: "Slide 1",
+            artist: "Artist 1",
+            description: "Placeholder image for slide 1",
+            url: "https://placehold.co/600x400?text=slide1",
+            alt: "Slide 1"
+        },
+        {
+            name: "Slide 4",
+            artist: "Artist 4",
+            description: "Placeholder image for slide 4",
+            //변수명으로 이미지 호출
+            url: slide.img1,
+            alt: "Slide 4"
+        },
+    
+        //플레이스홀더(placeholder): 이미지가 들어올 자리(place)를 잡고(hold) 있는 것
+    ]
+    ```
+    * 데이터 저장을 위한 모듈 파일
+    * index.jsx를 `import`하여 사용
+### [캐러셀 구현]
+```jsx
+        import {galleryImages} from "./imgData.jsx"
+
+        export default function Carousel(){
+            let index = 0;
+
+            function handleClick(){
+                index = index + 1;
+                console.log(index);
+            }
+
+            let slide = galleryImages[index];
+            
+            return (
+                <>
+                    <button onClick={handleClick}>Next</button>
+                    <h2>
+                        <i>{slide.name}</i>
+                        by {slide.artist}
+                    </h2>
+                    <h3>
+                        ({index + 1} of {galleryImages.length})
+                    </h3>
+                    <img src={slide.url} alt={slide.alt} />
+                    <p>{slide.description}</p>
+                </>
+            )
+        }
+```
+> `Cannot reassign variable after render completes`
+
+ **오류 발생** : 버튼을 눌렀을 때 `index` 값은 증가하지만 실제로 표시되는 <u>화면에는 변화 없음</u>
+#### <지역 변수로는 컴포넌트 상태 저장 불가능>
+1. 지역 변수에 변화가 있어도 React는 렌더링을 다시 하지 않음
+2. <u>렌더링 시 설정된 초깃값</u>이 언제나 유지됨
+3. `index`는 항상 0을 저장
+> --> state 사용 필요
+>> **state** : React에서 **상태 저장**을 위해 제공하는 메모리 
+### [useState() Hook]
+* **사용 방법** 
+    ```jsx
+    import { useState } from "react";
+    ``` 
+    * import 하여 사용
+* **기본 형태**
+    ```jsx
+    const [index, setIndex] = useState(0);
+    ```
+    * `[index,setIndex]`: 변수와 함수
+        * `index`: 변수
+        * `setIndex`: state를 변경하는 setter 함수
+        > 함수의 이름은 `set변수명`으로 사용하는 것이 관례이다.
+    * `useState(0)` : 초깃값 지정
+
+* 기존 코드 수정
+```jsx
+    const [index, setIndex] = useState(0);
+
+    function handleClick() {
+        //함수를 사용하여 값 변경
+        setIndex(index + 1);
+        console.log(index);
+    }
+```
+ > *정상적으로 사진이 변경되지만 콘솔에 1씩 작은 index 값이 출력되는 이유
+ >> : `setIndex`와 `console.log`가 같은 핸들러 내에 있기 때문
+ >*  핸들러 안에서의 값 (증가시키기 전 입력된 값)이 출력됨
+
+ ### [버튼 클릭 시 발생하는 문제]
+ : 버튼을 5번까지 클릭했을 때 화면이 사라짐
+ * 코드 문법상 오류가 없을 때, 렌더링 중 오류가 발생하면 React는 <u>UI를 제거</u>함
+ * 오류 메시지: 오류 처리 동작을 지정하라
+    * 코드 **수정**이 필요한 오류가 아님 
+    * `error boundary`를 사용하라는 의미(수업에서 다루지 않음)
+* **해결** (기존 코드 개선)
+    ```jsx
+        function handleClick(){
+            if(index === galleryImages.length - 1){
+                setIndex(0);
+            }else{
+                setIndex(index + 1);
+            }
+            console.log(index);
+        }
+    ```
+    * `index`가 최대(`galleryImages.length - 1`)가 되면 0으로 돌아가도록 수정
+
+
 ## [11주차 - 26.05.13]
 > ### *이벤트 핸들러와 리스너
 > * **이벤트 핸들러** : 이벤트가 발생했을 때 취할 **동작**
