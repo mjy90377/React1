@@ -4,6 +4,7 @@ import style from "./Carousel.module.css"
 
 export default function Carousel(){
     const [index, setIndex] = useState(0);
+    const [more, setMore] = useState(false);
 
     function handleNext(){
         if(index === galleryImages.length - 1){
@@ -23,6 +24,11 @@ export default function Carousel(){
         console.log(index);
     }
 
+    function handleMoreClick(){
+        setMore(!more);
+    }
+
+   
     let slide = galleryImages[index];
     
     return (
@@ -35,9 +41,12 @@ export default function Carousel(){
                 ({index + 1} of {galleryImages.length})
             </h3>
             <img src={slide.url} alt={slide.alt} />
-            <button onClick={handlePrevious} className={style.button}>Previous</button>
-            <button onClick={handleNext} className={style.button}>Next</button>
-            <p>{slide.description}</p>
+            <div>
+                <button onClick={handlePrevious} className={style.button}>Previous</button>
+                <button onClick={handleNext} className={style.button}>Next</button>
+            </div>
+            <button onClick={handleMoreClick}>{more ? "Hide" : "Show"} description</button>
+            {more && <p>{slide.description}</p>}
         </section>
     )
 }
