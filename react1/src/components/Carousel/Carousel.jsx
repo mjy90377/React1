@@ -28,7 +28,6 @@ export default function Carousel(){
         setMore(!more);
     }
 
-   
     let slide = galleryImages[index];
     
     return (

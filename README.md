@@ -1,4 +1,145 @@
 # 202430208 민지영
+## [13주차 - 25.05.27]
+## 1. State
+### [React Hook에서의 state]
+: React의 핵심 철학은 state 기반 UI이다.
+* 대부분의 렌더링 모델을 state로 설명 가능
+* 다른 Hook들은 state 문제 해결을 위한 도구
+* useState는 다른 대부분의 개념들에도 연결됨
+> #### *대표적인 Hook의 종류
+> * **useState**: state 저장
+> - **useReducer**: state 관리
+> - **context** : state 공유
+> - **useMemo** : state 기반 계산 최적화
+> - **useEffect** : state 변화 후 동작
+
+### [Hook의 특징]
+: React가 <u>렌더링 중에만</u> 사용할 수 있는 **함수**
+* `use`로 시작하는 모든 함수
+* 일반 모듈처럼 `import`하여 사용
+* **최상위 수준**에서만(컴포넌트 전체 스코프) 사용 가능
+    * 조건문, 반복문, 중첩 함수 <u>내부에서 호출 불가</u>
+
+### [여러 개의 state 사용]
+--> 하나의 컴포넌트에서 state 변수 여러 개 사용 가능
+* 개수 제한 없음
+    ```jsx
+    export default function Carousel(){
+        const [index, setIndex] = useState(0);
+        const [more, setMore] = useState(false);
+
+        function handleNext(){
+            if(index === galleryImages.length - 1){
+                setIndex(0);
+            }else{
+                setIndex(index + 1);
+            }
+            console.log(index);
+        }
+
+        function handlePrevious(){
+            if(index === 0){
+                setIndex(galleryImages.length - 1);
+            }else{
+                setIndex(index - 1);
+            }
+            console.log(index);
+        }
+
+        function handleMoreClick(){
+            setMore(!more);
+        }
+
+        let slide = galleryImages[index];
+        
+        return (
+            <section className={style.wrapper}>   
+                <h2>
+                    <i>{slide.name}</i>
+                    by {slide.artist}
+                </h2>
+                <h3>
+                    ({index + 1} of {galleryImages.length})
+                </h3>
+                <img src={slide.url} alt={slide.alt} />
+                <div>
+                    <button onClick={handlePrevious} className={style.button}>Previous</button>
+                    <button onClick={handleNext} className={style.button}>Next</button>
+                </div>
+                <button onClick={handleMoreClick}>{more ? "Hide" : "Show"} description</button>
+                {more && <p>{slide.description}</p>}
+            </section>
+        )
+    }
+    ```
+    * boolean 값을 갖는변수 `more`를 통해 토글 버튼 추가 
+### [state의 특징]
+* state가 있는 컴포넌트를 중첩 호출하면 <u>각각 독립적으로 동작</u>함
+    * state는 렌더링된 화면에서 컴포넌트 객체에 **지역적**
+    * 같은 컴포넌트를 중첩해서 렌더링해도 완전히 격리된 state를 가짐
+* state는 **다른 컴포넌트의 state**에 <u>영향을 미치지 않음</u>
+* state는 선언한 컴포넌트 외에는 완전히 **비공개**
+    * 부모 컴포넌트에서 변경 불가
+    * <u>선언한 컴포넌트</u>에 **종속**됨 
+> #### *두 개의 컴포넌트에서 state를 동기화할 경우
+> : 자식 컴포넌트에서 state를 제거하고 상위 컴포넌트에서 state 선언
+> * props 전달 형태로 관리
+> * 이를 컴포넌트 간 state 공유라고 함
+## 2. 렌더링과 커밋
+### [렌더링] 
+: React에서 렌더링은 <u>화면에 표시되기까지 거치는</u> **과정**
+* 렌더링은 3단계의 과정으로 나뉨
+1. **렌더링 트리거**
+: 렌더링을 명령하는 단계, 2가지 이유로 발생
+    1. **초기 렌더링**인 경우 
+        * <u>앱을 시작할 때</u> 초기 렌더링을 촉발시킴
+        * index.jsx(vite는 main.jsx)에서 발생:  
+        > id가 root인 노드를 찾아서 --> `createRoot()` 함수로 호출 --> `render()` 메소드로 **App 컴포넌트** 호출
+        ```jsx
+            createRoot(document.getElementById('root')).render(
+            <StrictMode>
+                <App />
+            </StrictMode>,
+            )
+        ```
+    2. 컴포넌트의 **state가 업데이트**된 경우
+        *  초기 렌더링 이후 **set 함수**를 통해 <u>state를 업데이트</u>했을 경우
+        * 렌더링 큐에 추가되고 순서대로 렌더링(선입선출 구조)
+2. **컴포넌트 렌더링**
+: <u>컴포넌트를 호출</u>할 때 렌더링이 일어남
+    * 렌더링 트리거 직후 컴포넌트를 호출해서 화면에 표시할 내용을 파악
+    * 초기 렌더링에서 루트 컴포넌트 호출
+        * 초기 렌더링 이후 state가 업데이트되면 **해당 컴포넌트**를 호출
+    * **재귀적**으로 발생하는 프로세스(재귀함수와는 다른 구조)
+        * state 업데이트가 발생한 컴포넌트가 다른 컴포넌트를 중첩하고 있을 경우 해당 컴포넌트를 렌더링시킴
+        * 반환된 컴포넌트 호출 시 호출된 컴포넌트도 중첩되어 있다면 또 해당 컴포넌트 렌더링
+3. **DOM 커밋**
+: React가 DOM에 <u>변경 사항을 커밋</u>
+    * 컴포넌트를 렌더링한 후 DOM 수정
+    * 초기 렌더링일 경우 `appendChild()` API를 사용해 <u>생성한 모든 DOM 노드</u>를 화면에 표시
+    * 리렌더링일 경우 최신 렌더링의 출력과 일치하도록 **최소한의 작업**으로 DOM 변경
+        * React는 비동기식
+## 3. 스냅샷
+: 시스템, DB 등을 <u>특정 시점의 상태</u> 그대로 백업해두는 것
+* State는 스냅샷의 일종
+* 호출된 컴포넌트에서 반환하는 jsx == 특정 시점의 UI 스냅샷
+### [렌더링 과정에서의 스냅샷] 
+1. 상호작용 발생 시 React가 컴포넌트 다시 호출 / 스냅샷 계산
+2. 컴포넌트가 새로운 jsx 스냅샷 반환
+3. React는 컴포넌트가 반환한 스냅샷과 일치하도록 화면(DOM tree) 업데이트
+4. 새로운 state로 이벤트 핸들러 생성
+### [state의 동작]
+* state는 <u>컴포넌트의 메모리</u>로 동작
+    *  함수가 반환된 후 사라지는 일반 변수와 다름
+* state는 컴포넌트 내부가 아닌 **React 내부**에서 보관
+* React가 컴포넌트 호출 시 <u>특정 렌더링에 대한 state의 스냅샷</u> 제공
+* 스냅샷을 제공받은 컴포넌트는 해당 렌더링의 state 값으로 계산된 새로운 props 세트와 이벤트 핸들러가 포함된 ui 스냅샷을 **jsx에 반환**
+
+### [상호작용 발생 시 state의 작업]
+1. React가 state에 대한 업데이트를 명령
+2. state 값 업데이트
+3. 업데이트 된 state 값의 스냅샷을 컴포넌트에 전달
+
 ## [12주차 - 26.05.20]
 ## 1. 컴포넌트의 상태
 ### [이미지 모듈 파일]
@@ -94,7 +235,6 @@
     }
 ```
  > *정상적으로 사진이 변경되지만 콘솔에 1씩 작은 index 값이 출력되는 이유
- >> : `setIndex`와 `console.log`가 같은 핸들러 내에 있기 때문
  >*  핸들러 안에서의 값 (증가시키기 전 입력된 값)이 출력됨
 
  ### [버튼 클릭 시 발생하는 문제]
