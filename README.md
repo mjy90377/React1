@@ -1,4 +1,76 @@
 # 202430208 민지영
+## [14주차 - 25.06.05]
+## 1. 스냅샷
+### [스냅샷의 저장 시점]
+```jsx
+   import { useState } from "react"
+
+    export default function BtnClick(){
+        const [number, setNumber] = useState(0);
+        
+        function handleIncrease3() {
+            setNumber(number + 1);
+            setNumber(number + 1);
+            setNumber(number + 1);
+        }
+
+        return (
+            <>
+                <h1>{number}</h1>
+                <button onClick={handleIncrease3}>+3</button>
+            </>
+        )
+    }
+``` 
+--> 위 코드에서 버튼을 클릭하면 숫자는 **1씩 증가**함
+* React에서는 스냅샷을 <u>핸들러 함수 수행이 끝난 다음</u> 저장하기 때문에
+* 렌더링 시 state 값이 고정된 상태
+    *  `number`이 `0`일 경우 `0+1`이 3번 실행됨
+```jsx
+     function handleIncrease5() {
+        setNumber(number + 5);
+        alert(number);
+    }
+```
+* alert로 <u>연산 전의 값</u>이 출력됨
+    * **alert 창을 닫으면** 화면에 연산된 값 출력
+* React는 핸들러의 <u>모든 코드가 실행될 때까지 대기</u>함 
+    * 모든 함수가 호출된 이후 **리렌더링**이 일어남
+    ```jsx
+        function handleTimer () {
+            setNumber(number + 5);
+            setTimeout ( () => {
+                alert(number);
+            }, 3000);
+        }
+    ```
+* 각 함수를 하나씩 **큐(Queue)에 추가**하여 호출
+    * 큐의 **선입선출** 구조에 따라 `setNumber()`부터 동작함을 확인 가능
+### [업데이터 함수 사용]
+* **업데이터 함수**를 사용하도록 수정
+    ```jsx
+    setNumber(n => n + 1);
+    ````
+    * 변수의 이름은 상관없지만 <u>해당 state 변수 이름의 첫 글자</u>를 따서 사용하는 것이 권장됨
+        * 따라서 number의 첫 글자인 n 사용
+        * 업데이터 내에서 <u>지역적으로 사용되는 변수</u>와 state 변수를 구분하기 위해
+    * **화살표 함수**가 축약된 형태
+      * 매개 변수가 하나일 때 **소괄호** 생략 가능
+      * 실행문이 하나일 때 `return` 키워드와 **중괄호** 생략 가능
+* 핸들러 내부 수정
+     ```jsx
+        setNumber(n => n + 1);
+        console.log(number);
+        setNumber(n => n + 1);
+        console.log(number);
+        setNumber(n => n + 1);
+        console.log(number);
+    ```
+    * 버튼 클릭 시 number이 3씩 증가
+        * 콘솔에는 연산 이전 값이 3번 출력됨
+    * 큐를 순회하며 하나씩 실행 후 렌더링    
+
+
 ## [13주차 - 25.05.27]
 ## 1. State
 ### [React Hook에서의 state]
