@@ -4,16 +4,16 @@ export default function BtnClick(){
     const [number, setNumber] = useState(0);
     
     function handleIncrease3() {
-        setNumber(number + 1);
+        setNumber(n => n + 1);
         console.log(number);
-        setNumber(number + 1);
+        setNumber(n => n + 1);
         console.log(number);
-        setNumber(number + 1);
+        setNumber(n => n + 1);
         console.log(number);
     }
 
     function handleIncrease5() {
-        setNumber(number + 1);
+        setNumber(number + 5);
         alert(number);
     }
 
