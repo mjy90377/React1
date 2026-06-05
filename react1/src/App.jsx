@@ -1,10 +1,9 @@
-import Carousel from "./components/Carousel/Carousel"
+import BtnClick from "./components/BtnClick"
 
 export default function App() {
   return (
     <>
-      <Carousel />
-      <Carousel />
+      <BtnClick />
     </>
   )
 }
