@@ -17,11 +17,20 @@ export default function BtnClick(){
         alert(number);
     }
 
+    function handleTimer () {
+        setNumber(number + 5);
+        setTimeout ( () => {
+            alert(number);
+        }, 3000);
+    }
+    
+
     return (
         <>
             <h1>{number}</h1>
             <button onClick={handleIncrease3}>+3</button>
             <button onClick={handleIncrease5}>+5</button>
+            <button onClick={handleTimer}>timer</button>
         </>
     )
 }
